@@ -14,7 +14,7 @@ class DataScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SectionHeader(title: 'Data'),
+            const SectionHeader(title: 'Data'),
             const SizedBox(height: 12),
             Wrap(
               spacing: 12,
@@ -30,15 +30,15 @@ class DataScreen extends StatelessWidget {
               onAction: () {},
             ),
             const SizedBox(height: 8),
-            _DownloadTile(
+            const _DownloadTile(
               title: 'Labour force dashboard (CSV)',
               subtitle: 'Provincial unemployment, participation, vacancy ratios',
             ),
-            _DownloadTile(
+            const _DownloadTile(
               title: 'Vacancy analytics (CSV)',
               subtitle: 'Top sectors, skill demand, wage bands',
             ),
-            _DownloadTile(
+            const _DownloadTile(
               title: 'Regional leading indicators (XLSX)',
               subtitle: 'Mobility, online vacancies, informal signals',
             ),

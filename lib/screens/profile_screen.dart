@@ -23,7 +23,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SectionHeader(title: 'Profile & Preferences'),
+            const SectionHeader(title: 'Profile & Preferences'),
             const SizedBox(height: 12),
             Card(
               elevation: 0,
@@ -42,7 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ?.copyWith(fontWeight: FontWeight.w700)),
                     const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
-                      value: selectedRole,
+                      initialValue: selectedRole,
                       items: const [
                         DropdownMenuItem(value: 'Analyst', child: Text('Analyst')),
                         DropdownMenuItem(value: 'Public', child: Text('Public')),
@@ -122,8 +122,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Column(
-                children: const [
+              child: const Column(
+                children: [
                   ListTile(
                     leading: Icon(Icons.info_outline),
                     title: Text('About PASKER ID'),

@@ -56,7 +56,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SectionHeader(title: 'Report Library'),
+                const SectionHeader(title: 'Report Library'),
                 const SizedBox(height: 10),
                 TextField(
                   controller: _searchController,

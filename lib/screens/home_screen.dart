@@ -130,7 +130,7 @@ class _TrendChart extends StatelessWidget {
               LineChartData(
                 lineTouchData: LineTouchData(
                   touchTooltipData: LineTouchTooltipData(
-                    tooltipBgColor: Colors.white,
+                    getTooltipColor: (_) => Colors.white,
                     getTooltipItems: (touchedSpots) {
                       return touchedSpots.map((barSpot) {
                         final month =
@@ -143,7 +143,7 @@ class _TrendChart extends StatelessWidget {
                     },
                   ),
                 ),
-                gridData: FlGridData(show: true, horizontalInterval: 0.2),
+                gridData: const FlGridData(show: true, horizontalInterval: 0.2),
                 titlesData: FlTitlesData(
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
@@ -192,7 +192,7 @@ class _TrendChart extends StatelessWidget {
                     isCurved: true,
                     color: AppColors.primary,
                     barWidth: 3,
-                    dotData: FlDotData(show: false),
+                    dotData: const FlDotData(show: false),
                     spots: spots,
                     belowBarData: BarAreaData(
                       show: true,
