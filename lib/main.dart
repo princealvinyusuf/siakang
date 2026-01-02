@@ -34,7 +34,7 @@ class _Shell extends StatefulWidget {
 class _ShellState extends State<_Shell> {
   int _index = 0;
 
-  final _screens = const [
+  final List<Widget> _screens = const [
     HomeScreen(),
     ReportsScreen(),
     DataScreen(),
