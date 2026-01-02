@@ -103,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _Header(),
             const SizedBox(height: 16),
             SectionHeader(
-              title: 'Key Indicators',
+              title: 'Indikator Utama',
               onAction: () => setState(() {
                 _showAllIndicators = !_showAllIndicators;
               }),
@@ -149,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (_showAllIndicators) ...[
                       const SizedBox(height: 14),
                       Text(
-                        'Primary',
+                        'Sisi Demand',
                         style: Theme.of(context)
                             .textTheme
                             .titleMedium
@@ -159,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       _IndicatorCarousel(stats: data.primary),
                       const SizedBox(height: 14),
                       Text(
-                        'Secondary',
+                        'Informasi KarirHub by Kemnaker',
                         style: Theme.of(context)
                             .textTheme
                             .titleMedium
