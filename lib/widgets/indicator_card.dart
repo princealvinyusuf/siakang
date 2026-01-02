@@ -9,6 +9,11 @@ class IndicatorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final isCompact = width < 360;
+    final iconSize = isCompact ? 22.0 : 28.0;
+    final iconPadding = isCompact ? 10.0 : 12.0;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       padding: const EdgeInsets.all(16),
@@ -26,12 +31,12 @@ class IndicatorCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(iconPadding),
             decoration: BoxDecoration(
               color: stat.color.withOpacity(0.12),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(stat.icon, color: stat.color, size: 28),
+            child: Icon(stat.icon, color: stat.color, size: iconSize),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -41,13 +46,19 @@ class IndicatorCard extends StatelessWidget {
                 Text(
                   stat.title,
                   style: Theme.of(context).textTheme.titleMedium,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  stat.value,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: AppColors.primary,
-                      ),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    stat.value,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: AppColors.primary,
+                        ),
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -56,6 +67,8 @@ class IndicatorCard extends StatelessWidget {
                       .textTheme
                       .bodyMedium
                       ?.copyWith(color: AppColors.muted),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),

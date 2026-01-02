@@ -1,13 +1,81 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import '../data/highlight_statistics_api.dart';
 import '../data/mock_data.dart';
 import '../theme/app_theme.dart';
 import '../widgets/indicator_card.dart';
 import '../widgets/section_header.dart';
 import 'report_detail_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final _api = HighlightStatisticsApi();
+  late Future<List<IndicatorStat>> _tertiaryIndicatorsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _tertiaryIndicatorsFuture = _loadTertiaryIndicators();
+  }
+
+  Future<List<IndicatorStat>> _loadTertiaryIndicators() async {
+    final items = await _api.fetchTertiary();
+    final colors = <Color>[
+      AppColors.accentBlue,
+      AppColors.accentGreen,
+      AppColors.accentOrange,
+      AppColors.secondary,
+      AppColors.primary,
+    ];
+
+    return items.asMap().entries.map((entry) {
+      final idx = entry.key;
+      final item = entry.value;
+      final valueWithUnit =
+          item.unit.isEmpty ? item.value : '${item.value} ${item.unit}';
+      return IndicatorStat(
+        title: item.title,
+        value: valueWithUnit,
+        changeText: item.description,
+        icon: _mapFaLogoToIcon(item.logo),
+        color: colors[idx % colors.length],
+      );
+    }).toList();
+  }
+
+  IconData _mapFaLogoToIcon(String rawLogo) {
+    final logo = rawLogo.trim();
+    switch (logo) {
+      case 'fa-briefcase':
+        return Icons.work_outline_rounded;
+      case 'fa-chart-line':
+        return Icons.show_chart_rounded;
+      case 'fa-user-check':
+        return Icons.person_rounded;
+      case 'fa-user-times':
+        return Icons.person_off_rounded;
+      case 'fa-percent':
+        return Icons.percent_rounded;
+      case 'fa-users':
+        return Icons.groups_rounded;
+      case 'fa-user-tie':
+        return Icons.badge_outlined;
+      case 'fa-building':
+        return Icons.apartment_rounded;
+      case 'fa-bullhorn':
+        return Icons.campaign_rounded;
+      case 'fa-file-alt':
+        return Icons.description_outlined;
+      default:
+        return Icons.analytics_outlined;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +93,41 @@ class HomeScreen extends StatelessWidget {
             SectionHeader(
               title: 'Key Indicators',
               actionLabel: 'See all',
-              onAction: () {},
+              onAction: () => setState(() {
+                _tertiaryIndicatorsFuture = _loadTertiaryIndicators();
+              }),
             ),
             const SizedBox(height: 10),
             SizedBox(
               height: 160,
-              child: PageView.builder(
-                controller: PageController(viewportFraction: 0.9),
-                itemCount: indicatorStats.length,
-                itemBuilder: (context, index) =>
-                    IndicatorCard(stat: indicatorStats[index]),
+              child: FutureBuilder<List<IndicatorStat>>(
+                future: _tertiaryIndicatorsFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return _IndicatorsError(
+                      onRetry: () => setState(() {
+                        _tertiaryIndicatorsFuture = _loadTertiaryIndicators();
+                      }),
+                    );
+                  }
+                  final data = snapshot.data ?? const <IndicatorStat>[];
+                  if (data.isEmpty) {
+                    return const Center(
+                      child: Text('No indicators available right now.'),
+                    );
+                  }
+                  return PageView.builder(
+                    controller: PageController(viewportFraction: 0.9),
+                    itemCount: data.length,
+                    itemBuilder: (context, index) =>
+                        IndicatorCard(stat: data[index]),
+                  );
+                },
               ),
             ),
             const SizedBox(height: 18),
@@ -97,6 +190,48 @@ class _Header extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _IndicatorsError extends StatelessWidget {
+  final VoidCallback onRetry;
+
+  const _IndicatorsError({required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Could not load indicators.',
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Please check your connection and try again.',
+              textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: AppColors.muted),
+            ),
+            const SizedBox(height: 10),
+            TextButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh_rounded),
+              label: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
