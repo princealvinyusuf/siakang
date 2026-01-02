@@ -16,16 +16,28 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _api = HighlightStatisticsApi();
-  late Future<List<IndicatorStat>> _tertiaryIndicatorsFuture;
+  late Future<_IndicatorsData> _indicatorsFuture;
+  bool _showAllIndicators = false;
 
   @override
   void initState() {
     super.initState();
-    _tertiaryIndicatorsFuture = _loadTertiaryIndicators();
+    _indicatorsFuture = _loadIndicators();
   }
 
-  Future<List<IndicatorStat>> _loadTertiaryIndicators() async {
-    final items = await _api.fetchTertiary();
+  Future<_IndicatorsData> _loadIndicators() async {
+    final resp = await _api.fetchAll();
+    return _IndicatorsData(
+      tertiary: _toIndicatorStats(resp.tertiary, seedOffset: 0),
+      primary: _toIndicatorStats(resp.primary, seedOffset: 10),
+      secondary: _toIndicatorStats(resp.secondary, seedOffset: 20),
+    );
+  }
+
+  List<IndicatorStat> _toIndicatorStats(
+    List<HighlightStatisticItem> items, {
+    required int seedOffset,
+  }) {
     final colors = <Color>[
       AppColors.accentBlue,
       AppColors.accentGreen,
@@ -44,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
         value: valueWithUnit,
         changeText: item.description,
         icon: _mapFaLogoToIcon(item.logo),
-        color: colors[idx % colors.length],
+        color: colors[(seedOffset + idx) % colors.length],
       );
     }).toList();
   }
@@ -92,43 +104,73 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 16),
             SectionHeader(
               title: 'Key Indicators',
-              actionLabel: 'See all',
               onAction: () => setState(() {
-                _tertiaryIndicatorsFuture = _loadTertiaryIndicators();
+                _showAllIndicators = !_showAllIndicators;
               }),
+              actionLabel: _showAllIndicators ? 'Hide' : 'See all',
             ),
             const SizedBox(height: 10),
-            SizedBox(
-              height: 160,
-              child: FutureBuilder<List<IndicatorStat>>(
-                future: _tertiaryIndicatorsFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
+            FutureBuilder<_IndicatorsData>(
+              future: _indicatorsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox(
+                    height: 160,
+                    child: Center(
                       child: CircularProgressIndicator.adaptive(),
-                    );
-                  }
-                  if (snapshot.hasError) {
-                    return _IndicatorsError(
-                      onRetry: () => setState(() {
-                        _tertiaryIndicatorsFuture = _loadTertiaryIndicators();
-                      }),
-                    );
-                  }
-                  final data = snapshot.data ?? const <IndicatorStat>[];
-                  if (data.isEmpty) {
-                    return const Center(
-                      child: Text('No indicators available right now.'),
-                    );
-                  }
-                  return PageView.builder(
-                    controller: PageController(viewportFraction: 0.9),
-                    itemCount: data.length,
-                    itemBuilder: (context, index) =>
-                        IndicatorCard(stat: data[index]),
+                    ),
                   );
-                },
-              ),
+                }
+                if (snapshot.hasError) {
+                  return SizedBox(
+                    height: 160,
+                    child: _IndicatorsError(
+                      onRetry: () => setState(() {
+                        _indicatorsFuture = _loadIndicators();
+                      }),
+                    ),
+                  );
+                }
+
+                final data = snapshot.data;
+                if (data == null || data.tertiary.isEmpty) {
+                  return const SizedBox(
+                    height: 160,
+                    child: Center(
+                      child: Text('No indicators available right now.'),
+                    ),
+                  );
+                }
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _IndicatorCarousel(stats: data.tertiary),
+                    if (_showAllIndicators) ...[
+                      const SizedBox(height: 14),
+                      Text(
+                        'Primary',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w700),
+                      ),
+                      const SizedBox(height: 8),
+                      _IndicatorCarousel(stats: data.primary),
+                      const SizedBox(height: 14),
+                      Text(
+                        'Secondary',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w700),
+                      ),
+                      const SizedBox(height: 8),
+                      _IndicatorCarousel(stats: data.secondary),
+                    ],
+                  ],
+                );
+              },
             ),
             const SizedBox(height: 18),
             SectionHeader(
@@ -151,6 +193,42 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+class _IndicatorCarousel extends StatelessWidget {
+  final List<IndicatorStat> stats;
+
+  const _IndicatorCarousel({required this.stats});
+
+  @override
+  Widget build(BuildContext context) {
+    if (stats.isEmpty) {
+      return const SizedBox(
+        height: 160,
+        child: Center(child: Text('No data')),
+      );
+    }
+    return SizedBox(
+      height: 160,
+      child: PageView.builder(
+        controller: PageController(viewportFraction: 0.9),
+        itemCount: stats.length,
+        itemBuilder: (context, index) => IndicatorCard(stat: stats[index]),
+      ),
+    );
+  }
+}
+
+class _IndicatorsData {
+  final List<IndicatorStat> tertiary;
+  final List<IndicatorStat> primary;
+  final List<IndicatorStat> secondary;
+
+  const _IndicatorsData({
+    required this.tertiary,
+    required this.primary,
+    required this.secondary,
+  });
 }
 
 class _Header extends StatelessWidget {
