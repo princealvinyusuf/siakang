@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
+import '../data/information_api.dart';
 import '../data/mock_data.dart';
 import '../theme/app_theme.dart';
 import '../widgets/section_header.dart';
+import 'document_viewer_screen.dart';
 
-class DataScreen extends StatelessWidget {
+class DataScreen extends StatefulWidget {
   const DataScreen({super.key});
+
+  @override
+  State<DataScreen> createState() => _DataScreenState();
+}
+
+class _DataScreenState extends State<DataScreen> {
+  final _api = InformationApi();
+  late Future<List<PublicationItem>> _publikasiFuture;
+  bool _showAll = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _publikasiFuture = _api.fetchPublikasi();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,21 +43,60 @@ class DataScreen extends StatelessWidget {
             const SizedBox(height: 20),
             SectionHeader(
               title: 'Quick downloads',
-              actionLabel: 'View all',
-              onAction: () {},
+              actionLabel: _showAll ? 'Hide' : 'View all',
+              onAction: () => setState(() => _showAll = !_showAll),
             ),
             const SizedBox(height: 8),
-            const _DownloadTile(
-              title: 'Labour force dashboard (CSV)',
-              subtitle: 'Provincial unemployment, participation, vacancy ratios',
-            ),
-            const _DownloadTile(
-              title: 'Vacancy analytics (CSV)',
-              subtitle: 'Top sectors, skill demand, wage bands',
-            ),
-            const _DownloadTile(
-              title: 'Regional leading indicators (XLSX)',
-              subtitle: 'Mobility, online vacancies, informal signals',
+            FutureBuilder<List<PublicationItem>>(
+              future: _publikasiFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                  );
+                }
+
+                if (snapshot.hasError) {
+                  return _PublikasiError(
+                    onRetry: () => setState(() {
+                      _publikasiFuture = _api.fetchPublikasi();
+                    }),
+                  );
+                }
+
+                final items = snapshot.data ?? const <PublicationItem>[];
+                if (items.isEmpty) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    child: Text('No downloads available right now.'),
+                  );
+                }
+
+                final visible =
+                    _showAll ? items : items.take(5).toList(growable: false);
+                return Column(
+                  children: visible
+                      .map(
+                        (item) => _PublicationTile(
+                          item: item,
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => DocumentViewerScreen(
+                                  title: item.title,
+                                  fileUrl: item.fileUrl,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                      .toList(),
+                );
+              },
             ),
           ],
         ),
@@ -139,6 +195,96 @@ class _DownloadTile extends StatelessWidget {
           icon: const Icon(Icons.arrow_forward_ios_rounded, size: 18),
           onPressed: () {},
         ),
+      ),
+    );
+  }
+}
+
+class _PublicationTile extends StatelessWidget {
+  final PublicationItem item;
+  final VoidCallback onTap;
+
+  const _PublicationTile({required this.item, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final subtitle = [
+      if (item.date.isNotEmpty) item.date,
+      if (item.description.isNotEmpty) item.description,
+    ].join('\n');
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      child: ListTile(
+        onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: AppColors.secondary.withOpacity(0.12),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const Icon(
+            Icons.cloud_download_outlined,
+            color: AppColors.secondary,
+          ),
+        ),
+        title: Text(
+          item.title,
+          style: Theme.of(context).textTheme.titleMedium,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Text(
+          subtitle,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium
+              ?.copyWith(color: AppColors.muted),
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 18),
+      ),
+    );
+  }
+}
+
+class _PublikasiError extends StatelessWidget {
+  final VoidCallback onRetry;
+
+  const _PublikasiError({required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        children: [
+          Text(
+            'Could not load downloads.',
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Please check your connection and try again.',
+            textAlign: TextAlign.center,
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(color: AppColors.muted),
+          ),
+          const SizedBox(height: 8),
+          TextButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh_rounded),
+            label: const Text('Retry'),
+          ),
+        ],
       ),
     );
   }
