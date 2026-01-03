@@ -1,12 +1,13 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../data/highlight_statistics_api.dart';
+import '../data/information_api.dart';
 import '../data/mock_data.dart';
-import '../config/tableau_urls.dart';
 import '../theme/app_theme.dart';
 import '../widgets/indicator_card.dart';
 import '../widgets/section_header.dart';
-import 'report_detail_screen.dart';
+import 'data_screen.dart';
+import 'document_viewer_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,13 +18,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _api = HighlightStatisticsApi();
+  final _informationApi = InformationApi();
   late Future<_IndicatorsData> _indicatorsFuture;
+  late Future<PublicationItem?> _latestSipkFuture;
   bool _showAllIndicators = false;
 
   @override
   void initState() {
     super.initState();
     _indicatorsFuture = _loadIndicators();
+    _latestSipkFuture = _loadLatestSipk();
   }
 
   Future<_IndicatorsData> _loadIndicators() async {
@@ -90,11 +94,20 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<PublicationItem?> _loadLatestSipk() async {
+    // Fetch from API and pick the newest record with subject == "Infografis SIPK".
+    // We intentionally filter client-side to be resilient if query params change.
+    final items = await _informationApi.fetchPublikasi();
+    for (final item in items) {
+      if (item.subject.trim().toLowerCase() == 'infografis sipk') {
+        return item;
+      }
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final latestReport =
-        reports.firstWhere((r) => r.isLatest, orElse: () => reports.first);
-
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -185,10 +198,42 @@ class _HomeScreenState extends State<HomeScreen> {
             SectionHeader(
               title: 'Latest Report',
               actionLabel: 'View library',
-              onAction: () {},
+              onAction: () {
+                // Opens the Data screen in a new route (bottom nav remains on Home).
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const DataScreen()),
+                );
+              },
             ),
             const SizedBox(height: 10),
-            _LatestReportCard(report: latestReport),
+            FutureBuilder<PublicationItem?>(
+              future: _latestSipkFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox(
+                    height: 140,
+                    child: Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                  );
+                }
+
+                if (snapshot.hasError) {
+                  return _LatestReportError(
+                    onRetry: () => setState(() {
+                      _latestSipkFuture = _loadLatestSipk();
+                    }),
+                  );
+                }
+
+                final item = snapshot.data;
+                if (item == null) {
+                  return const _LatestReportEmpty();
+                }
+
+                return _LatestPublicationCard(item: item);
+              },
+            ),
           ],
         ),
       ),
@@ -435,10 +480,129 @@ class _TrendChart extends StatelessWidget {
   }
 }
 
-class _LatestReportCard extends StatelessWidget {
-  final ReportItem report;
+class _LatestPublicationCard extends StatelessWidget {
+  final PublicationItem item;
 
-  const _LatestReportCard({required this.report});
+  const _LatestPublicationCard({required this.item});
+
+  String _formatDate(String raw) {
+    // raw is usually YYYY-MM-DD
+    try {
+      final dt = DateTime.parse(raw);
+      const months = <String>[
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
+      return '${dt.day} ${months[dt.month - 1]} ${dt.year}';
+    } catch (_) {
+      return raw;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dateLabel = item.date.isNotEmpty ? _formatDate(item.date) : '';
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              item.title,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              item.description.isNotEmpty
+                  ? item.description
+                  : 'Latest publication from PASKER.ID',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: AppColors.muted),
+            ),
+            const SizedBox(height: 14),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                if (dateLabel.isNotEmpty)
+                  Chip(
+                    label: Text(dateLabel),
+                    backgroundColor: AppColors.primary.withOpacity(0.1),
+                    labelStyle: const TextStyle(color: AppColors.primary),
+                  ),
+                if (item.subject.isNotEmpty)
+                  Chip(
+                    label: Text(item.subject),
+                    backgroundColor: Colors.grey.shade200,
+                  ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => DocumentViewerScreen(
+                      title: item.title,
+                      fileUrl: item.fileUrl,
+                    ),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.open_in_new_rounded),
+              label: const Text('View Report'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LatestReportEmpty extends StatelessWidget {
+  const _LatestReportEmpty();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Text(
+          'No Infografis SIPK publications available right now.',
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium
+              ?.copyWith(color: AppColors.muted),
+        ),
+      ),
+    );
+  }
+}
+
+class _LatestReportError extends StatelessWidget {
+  final VoidCallback onRetry;
+
+  const _LatestReportError({required this.onRetry});
 
   @override
   Widget build(BuildContext context) {
@@ -451,49 +615,25 @@ class _LatestReportCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              report.title,
+              'Could not load latest report.',
               style: Theme.of(context)
                   .textTheme
                   .titleMedium
                   ?.copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
-              report.summary,
+              'Please check your connection and try again.',
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
                   ?.copyWith(color: AppColors.muted),
             ),
-            const SizedBox(height: 14),
-            Row(
-              children: [
-                Chip(
-                  label: Text(report.period),
-                  backgroundColor: AppColors.primary.withOpacity(0.1),
-                  labelStyle: const TextStyle(color: AppColors.primary),
-                ),
-                const SizedBox(width: 8),
-                Chip(
-                  label: Text(report.category),
-                  backgroundColor: Colors.grey.shade200,
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => ReportDetailScreen(
-                      reportUrl: kDefaultTableauReportUrl,
-                      title: report.title,
-                    ),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.open_in_new_rounded),
-              label: const Text('View Report'),
+            const SizedBox(height: 10),
+            TextButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh_rounded),
+              label: const Text('Retry'),
             ),
           ],
         ),
