@@ -10,7 +10,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool notifyReports = true;
-  bool notifyData = true;
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +32,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: const Text('Notify when new report is published'),
                     value: notifyReports,
                     onChanged: (val) => setState(() => notifyReports = val),
-                  ),
-                  const Divider(height: 0),
-                  SwitchListTile(
-                    title: const Text('Notify when data updates are available'),
-                    value: notifyData,
-                    onChanged: (val) => setState(() => notifyData = val),
                   ),
                 ],
               ),
