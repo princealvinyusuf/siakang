@@ -3,13 +3,11 @@ import '../data/highlight_statistics_api.dart';
 import '../data/information_api.dart';
 import '../data/mock_data.dart';
 import '../config/tableau_embeds.dart';
-import '../config/tableau_urls.dart';
 import '../theme/app_theme.dart';
 import '../widgets/indicator_card.dart';
 import '../widgets/section_header.dart';
-import '../widgets/tableau_embed_card.dart';
+import '../widgets/tableau_embed_carousel.dart';
 import 'document_viewer_screen.dart';
-import 'report_detail_screen.dart';
 import '../navigation/tab_nav_controller.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -192,9 +190,18 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 18),
             const SectionHeader(title: 'Unemployment Rate (Last 12 Months)'),
             const SizedBox(height: 10),
-            const TableauEmbedCard(
-              html: kUnemploymentOverviewTableauEmbedHtml,
-              height: 430,
+            const TableauEmbedCarousel(
+              cardHeight: 470,
+              items: [
+                TableauEmbedCarouselItem(
+                  title: 'Overview Pengangguran',
+                  html: kUnemploymentOverviewTableauEmbedHtml,
+                ),
+                TableauEmbedCarouselItem(
+                  title: 'Overview Penduduk Bekerja',
+                  html: kWorkOverviewTableauEmbedHtml,
+                ),
+              ],
             ),
             const SizedBox(height: 18),
             SectionHeader(
