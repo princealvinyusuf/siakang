@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../data/highlight_statistics_api.dart';
 import '../data/mock_data.dart';
+import '../config/tableau_urls.dart';
 import '../theme/app_theme.dart';
 import '../widgets/indicator_card.dart';
 import '../widgets/section_header.dart';
@@ -485,7 +486,7 @@ class _LatestReportCard extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => ReportDetailScreen(
-                      reportUrl: 'https://public.tableau.com/app/profile/tableau.developers/viz/WorldIndicators/GDPpercapita',
+                      reportUrl: kDefaultTableauReportUrl,
                       title: report.title,
                     ),
                   ),
