@@ -250,7 +250,7 @@ class _Header extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'PASKER ID – Labour Market Intelligence',
+                'SIPKer by PASKER.ID',
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium

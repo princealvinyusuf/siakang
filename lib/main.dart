@@ -16,7 +16,7 @@ class PaskerIdLmiApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'PASKER ID - Labour Market Intelligence',
+      title: 'SIPKer by PASKER.ID',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       home: const _Shell(),

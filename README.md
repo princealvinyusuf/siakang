@@ -1,4 +1,4 @@
-# PASKER ID – Labour Market Intelligence (Mobile)
+# SIPKer by PASKER.ID (Mobile)
 
 Flutter mobile app for Android and iOS that delivers labour market intelligence (LMI) snapshots for policymakers, analysts, researchers, and internal Kemnaker stakeholders.
 

@@ -126,9 +126,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   ListTile(
                     leading: Icon(Icons.info_outline),
-                    title: Text('About PASKER ID'),
+                    title: Text('About SIPKer'),
                     subtitle:
-                        Text('Labour Market Intelligence by Kemnaker RI'),
+                        Text('by PASKER.ID'),
                   ),
                   Divider(height: 0),
                   ListTile(
