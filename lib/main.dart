@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'navigation/tab_nav_controller.dart';
 import 'screens/data_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/profile_screen.dart';
@@ -32,7 +33,7 @@ class _Shell extends StatefulWidget {
 }
 
 class _ShellState extends State<_Shell> {
-  int _index = 0;
+  final ValueNotifier<int> _index = ValueNotifier<int>(0);
 
   final List<Widget> _screens = const [
     HomeScreen(),
@@ -42,35 +43,49 @@ class _ShellState extends State<_Shell> {
   ];
 
   @override
+  void dispose() {
+    _index.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _screens[_index],
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _index,
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-        onDestinationSelected: (value) => setState(() => _index = value),
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.menu_book_outlined),
-            selectedIcon: Icon(Icons.menu_book),
-            label: 'Reports',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.dataset_outlined),
-            selectedIcon: Icon(Icons.dataset),
-            label: 'Data',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+    return TabNavController(
+      notifier: _index,
+      child: ValueListenableBuilder<int>(
+        valueListenable: _index,
+        builder: (context, idx, _) {
+          return Scaffold(
+            body: _screens[idx],
+            bottomNavigationBar: NavigationBar(
+              selectedIndex: idx,
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+              onDestinationSelected: (value) => _index.value = value,
+              destinations: const [
+                NavigationDestination(
+                  icon: Icon(Icons.home_outlined),
+                  selectedIcon: Icon(Icons.home),
+                  label: 'Home',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.menu_book_outlined),
+                  selectedIcon: Icon(Icons.menu_book),
+                  label: 'Reports',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.dataset_outlined),
+                  selectedIcon: Icon(Icons.dataset),
+                  label: 'Data',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.person_outline),
+                  selectedIcon: Icon(Icons.person),
+                  label: 'Profile',
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

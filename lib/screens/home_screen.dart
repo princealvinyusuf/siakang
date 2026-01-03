@@ -6,8 +6,8 @@ import '../data/mock_data.dart';
 import '../theme/app_theme.dart';
 import '../widgets/indicator_card.dart';
 import '../widgets/section_header.dart';
-import 'data_screen.dart';
 import 'document_viewer_screen.dart';
+import '../navigation/tab_nav_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -199,9 +199,8 @@ class _HomeScreenState extends State<HomeScreen> {
               title: 'Latest Report',
               actionLabel: 'View library',
               onAction: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const _DataLibraryRoute()),
-                );
+                // Switch bottom-nav tab to "Data" (index 2 in main.dart)
+                TabNavController.of(context).value = 2;
               },
             ),
             const SizedBox(height: 10),
@@ -641,14 +640,4 @@ class _LatestReportError extends StatelessWidget {
   }
 }
 
-class _DataLibraryRoute extends StatelessWidget {
-  const _DataLibraryRoute();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: const DataScreen(),
-    );
-  }
-}
 
