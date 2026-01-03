@@ -16,11 +16,21 @@ class _DataScreenState extends State<DataScreen> {
   final _api = InformationApi();
   late Future<List<PublicationItem>> _publikasiFuture;
   bool _showAll = false;
+  String? _selectedSubject;
+
+  static const _subjects = <String>[
+    'Seputar Pasar Kerja (SPARK)',
+    'Infografis SIPK',
+    'Angkatan Kerja',
+    'Pedoman / Regulasi',
+    'Labour Market Inteligence Report',
+    'Infografis Job Fair',
+  ];
 
   @override
   void initState() {
     super.initState();
-    _publikasiFuture = _api.fetchPublikasi();
+    _publikasiFuture = _api.fetchPublikasi(subject: _selectedSubject);
   }
 
   @override
@@ -47,6 +57,37 @@ class _DataScreenState extends State<DataScreen> {
               onAction: () => setState(() => _showAll = !_showAll),
             ),
             const SizedBox(height: 8),
+            DropdownButtonFormField<String?>(
+              value: _selectedSubject,
+              decoration: InputDecoration(
+                labelText: 'Subject',
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              items: [
+                const DropdownMenuItem<String?>(
+                  value: null,
+                  child: Text('All subjects'),
+                ),
+                ..._subjects.map(
+                  (s) => DropdownMenuItem<String?>(
+                    value: s,
+                    child: Text(s, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  ),
+                ),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  _selectedSubject = value;
+                  _showAll = false;
+                  _publikasiFuture = _api.fetchPublikasi(subject: value);
+                });
+              },
+            ),
+            const SizedBox(height: 8),
             FutureBuilder<List<PublicationItem>>(
               future: _publikasiFuture,
               builder: (context, snapshot) {
@@ -62,7 +103,8 @@ class _DataScreenState extends State<DataScreen> {
                 if (snapshot.hasError) {
                   return _PublikasiError(
                     onRetry: () => setState(() {
-                      _publikasiFuture = _api.fetchPublikasi();
+                      _publikasiFuture =
+                          _api.fetchPublikasi(subject: _selectedSubject);
                     }),
                   );
                 }
@@ -162,44 +204,6 @@ class _HighlightCard extends StatelessWidget {
   }
 }
 
-class _DownloadTile extends StatelessWidget {
-  final String title;
-  final String subtitle;
-
-  const _DownloadTile({required this.title, required this.subtitle});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        leading: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: AppColors.secondary.withOpacity(0.12),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: const Icon(Icons.cloud_download_outlined, color: AppColors.secondary),
-        ),
-        title: Text(title, style: Theme.of(context).textTheme.titleMedium),
-        subtitle: Text(
-          subtitle,
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium
-              ?.copyWith(color: AppColors.muted),
-        ),
-        trailing: IconButton(
-          icon: const Icon(Icons.arrow_forward_ios_rounded, size: 18),
-          onPressed: () {},
-        ),
-      ),
-    );
-  }
-}
-
 class _PublicationTile extends StatelessWidget {
   final PublicationItem item;
   final VoidCallback onTap;
@@ -210,6 +214,7 @@ class _PublicationTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final subtitle = [
       if (item.date.isNotEmpty) item.date,
+      if (item.subject.isNotEmpty) item.subject,
       if (item.description.isNotEmpty) item.description,
     ].join('\n');
 

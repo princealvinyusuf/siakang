@@ -7,6 +7,7 @@ class PublicationItem {
   final String title;
   final String description;
   final String date; // API format: YYYY-MM-DD
+  final String subject;
   final String fileUrl;
 
   const PublicationItem({
@@ -14,6 +15,7 @@ class PublicationItem {
     required this.title,
     required this.description,
     required this.date,
+    required this.subject,
     required this.fileUrl,
   });
 
@@ -23,17 +25,26 @@ class PublicationItem {
       title: (json['title'] as String?)?.trim() ?? '',
       description: (json['description'] as String?)?.trim() ?? '',
       date: (json['date'] as String?)?.trim() ?? '',
+      subject: (json['subject'] as String?)?.trim() ?? '',
       fileUrl: (json['file_url'] as String?)?.trim() ?? '',
     );
   }
 }
 
 class InformationApi {
-  static const _endpoint =
-      'https://paskerid.kemnaker.go.id/api/information?type=publikasi';
+  static final Uri _baseUri =
+      Uri.parse('https://paskerid.kemnaker.go.id/api/information');
 
-  Future<List<PublicationItem>> fetchPublikasi() async {
-    final resp = await http.get(Uri.parse(_endpoint));
+  Future<List<PublicationItem>> fetchPublikasi({String? subject}) async {
+    final uri = _baseUri.replace(
+      queryParameters: <String, String>{
+        'type': 'publikasi',
+        if (subject != null && subject.trim().isNotEmpty)
+          'subject': subject.trim(),
+      },
+    );
+
+    final resp = await http.get(uri);
     if (resp.statusCode < 200 || resp.statusCode >= 300) {
       throw Exception('HTTP ${resp.statusCode}');
     }
