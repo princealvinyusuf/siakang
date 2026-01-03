@@ -199,9 +199,8 @@ class _HomeScreenState extends State<HomeScreen> {
               title: 'Latest Report',
               actionLabel: 'View library',
               onAction: () {
-                // Opens the Data screen in a new route (bottom nav remains on Home).
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const DataScreen()),
+                  MaterialPageRoute(builder: (_) => const _DataLibraryRoute()),
                 );
               },
             ),
@@ -638,6 +637,17 @@ class _LatestReportError extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _DataLibraryRoute extends StatelessWidget {
+  const _DataLibraryRoute();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: const DataScreen(),
     );
   }
 }
