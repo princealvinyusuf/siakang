@@ -19,7 +19,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SectionHeader(title: 'Profile & Preferences'),
+            const SectionHeader(title: 'About'),
             const SizedBox(height: 12),
             Card(
               elevation: 0,

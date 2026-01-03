@@ -80,7 +80,7 @@ class _ShellState extends State<_Shell> {
                 NavigationDestination(
                   icon: Icon(Icons.person_outline),
                   selectedIcon: Icon(Icons.person),
-                  label: 'Profile',
+                  label: 'About',
                 ),
               ],
             ),
