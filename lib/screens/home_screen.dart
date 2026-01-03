@@ -242,7 +242,12 @@ class _Header extends StatelessWidget {
             color: AppColors.primary.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: const Icon(Icons.analytics_outlined, color: AppColors.primary),
+          child: Image.asset(
+            'assets/icon/logo.png',
+            width: 28,
+            height: 28,
+            fit: BoxFit.contain,
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(
