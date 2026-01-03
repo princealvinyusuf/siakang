@@ -190,20 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             const SizedBox(height: 18),
-            SectionHeader(
-              title: 'Unemployment Rate (Last 12 Months)',
-              actionLabel: 'Open dashboard',
-              onAction: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const ReportDetailScreen(
-                      reportUrl: kUnemploymentOverviewTableauUrl,
-                      title: 'Overview Pengangguran',
-                    ),
-                  ),
-                );
-              },
-            ),
+            const SectionHeader(title: 'Unemployment Rate (Last 12 Months)'),
             const SizedBox(height: 10),
             const TableauEmbedCard(
               html: kUnemploymentOverviewTableauEmbedHtml,
