@@ -42,7 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ?.copyWith(fontWeight: FontWeight.w700)),
                     const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
-                      initialValue: selectedRole,
+                      value: selectedRole,
                       items: const [
                         DropdownMenuItem(value: 'Analyst', child: Text('Analyst')),
                         DropdownMenuItem(value: 'Public', child: Text('Public')),
