@@ -1,12 +1,14 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../data/highlight_statistics_api.dart';
 import '../data/information_api.dart';
-import '../data/mock_data.dart';
+import '../config/tableau_embeds.dart';
+import '../config/tableau_urls.dart';
 import '../theme/app_theme.dart';
 import '../widgets/indicator_card.dart';
 import '../widgets/section_header.dart';
+import '../widgets/tableau_embed_card.dart';
 import 'document_viewer_screen.dart';
+import 'report_detail_screen.dart';
 import '../navigation/tab_nav_controller.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -189,11 +191,23 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 18),
             SectionHeader(
               title: 'Unemployment Rate (Last 12 Months)',
-              actionLabel: 'Download CSV',
-              onAction: () {},
+              actionLabel: 'Open dashboard',
+              onAction: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const ReportDetailScreen(
+                      reportUrl: kUnemploymentOverviewTableauUrl,
+                      title: 'Overview Pengangguran',
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 10),
-            _TrendChart(),
+            const TableauEmbedCard(
+              html: kUnemploymentOverviewTableauEmbedHtml,
+              height: 430,
+            ),
             const SizedBox(height: 18),
             SectionHeader(
               title: 'Latest Report',
@@ -363,121 +377,6 @@ class _IndicatorsError extends StatelessWidget {
   }
 }
 
-class _TrendChart extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final spots = unemploymentTrend.asMap().entries.map((entry) {
-      return FlSpot(entry.key.toDouble(), entry.value.unemploymentRate);
-    }).toList();
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 220,
-            child: LineChart(
-              LineChartData(
-                lineTouchData: LineTouchData(
-                  touchTooltipData: LineTouchTooltipData(
-                    getTooltipColor: (_) => Colors.white,
-                    getTooltipItems: (touchedSpots) {
-                      return touchedSpots.map((barSpot) {
-                        final month =
-                            unemploymentTrend[barSpot.x.toInt()].monthLabel;
-                        return LineTooltipItem(
-                          '$month\n${barSpot.y.toStringAsFixed(1)}%',
-                          Theme.of(context).textTheme.bodyMedium!,
-                        );
-                      }).toList();
-                    },
-                  ),
-                ),
-                gridData: const FlGridData(show: true, horizontalInterval: 0.2),
-                titlesData: FlTitlesData(
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 40,
-                      interval: 0.2,
-                      getTitlesWidget: (value, meta) => Text(
-                        '${value.toStringAsFixed(1)}%',
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelLarge
-                            ?.copyWith(color: AppColors.muted, fontSize: 11),
-                      ),
-                    ),
-                  ),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (value, meta) {
-                        final index = value.toInt();
-                        if (index < 0 || index >= unemploymentTrend.length) {
-                          return const SizedBox.shrink();
-                        }
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 6),
-                          child: Text(
-                            unemploymentTrend[index].monthLabel,
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelLarge
-                                ?.copyWith(color: AppColors.muted, fontSize: 11),
-                          ),
-                        );
-                      },
-                      interval: 1,
-                    ),
-                  ),
-                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                ),
-                borderData: FlBorderData(show: false),
-                minY: 4.8,
-                maxY: 6.0,
-                lineBarsData: [
-                  LineChartBarData(
-                    isCurved: true,
-                    color: AppColors.primary,
-                    barWidth: 3,
-                    dotData: const FlDotData(show: false),
-                    spots: spots,
-                    belowBarData: BarAreaData(
-                      show: true,
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.primary.withOpacity(0.35),
-                          Colors.transparent,
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _LatestPublicationCard extends StatelessWidget {
   final PublicationItem item;
 
@@ -639,5 +538,4 @@ class _LatestReportError extends StatelessWidget {
     );
   }
 }
-
 
