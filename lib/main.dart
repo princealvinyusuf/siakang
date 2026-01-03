@@ -78,8 +78,8 @@ class _ShellState extends State<_Shell> {
                   label: 'Data',
                 ),
                 NavigationDestination(
-                  icon: Icon(Icons.person_outline),
-                  selectedIcon: Icon(Icons.person),
+                  icon: Icon(Icons.info_outline),
+                  selectedIcon: Icon(Icons.info),
                   label: 'About',
                 ),
               ],
