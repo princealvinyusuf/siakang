@@ -156,26 +156,6 @@ const reports = <ReportItem>[
         'https://public.tableau.com/views/DashboardPersediaanTenagaKerja/'
         'DashboardPencaker_New?:showVizHome=no&:tabs=no&:toolbar=yes',
   ),
-  ReportItem(
-    title: 'Provincial Labour Conditions Dashboard',
-    period: 'Semester I 2024',
-    category: 'Labour Market Intelligence',
-    summary: 'Provincial dispersion narrowed; top 5 provinces contributed 54% of new vacancies.',
-    pdfUrl: 'https://example.com/lmir-provincial-sem1-2024.pdf',
-    sector: 'Regional',
-    semester: 'I',
-    year: '2024',
-  ),
-  ReportItem(
-    title: 'Green Jobs and Transition Skills',
-    period: '2023 Annual',
-    category: 'Labour Market Intelligence',
-    summary: 'Early signals of green skills demand in energy, transport, and manufacturing supply chains.',
-    pdfUrl: 'https://example.com/lmir-green-jobs-2023.pdf',
-    sector: 'Green Economy',
-    semester: 'II',
-    year: '2023',
-  ),
 ];
 
 const dataHighlights = <DataHighlight>[
