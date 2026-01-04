@@ -14,101 +14,151 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SectionHeader(title: 'About'),
-            const SizedBox(height: 12),
-            Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                children: [
-                  SwitchListTile(
-                    title: const Text('Notify when new report is published'),
-                    value: notifyReports,
-                    onChanged: (val) => setState(() => notifyReports = val),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SectionHeader(title: 'About'),
+                            const SizedBox(height: 12),
+                            Card(
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Column(
+                                children: [
+                                  SwitchListTile(
+                                    title: const Text(
+                                      'Notify when new report is published',
+                                    ),
+                                    value: notifyReports,
+                                    onChanged: (val) =>
+                                        setState(() => notifyReports = val),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Card(
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Column(
+                                children: [
+                                  Theme(
+                                    data: Theme.of(context).copyWith(
+                                      dividerColor: Colors.transparent,
+                                    ),
+                                    child: ExpansionTile(
+                                      leading: const Icon(Icons.info_outline),
+                                      title: const Text('About SIPKer'),
+                                      subtitle: const Text('by PASKER.ID'),
+                                      childrenPadding:
+                                          const EdgeInsets.fromLTRB(
+                                        16,
+                                        0,
+                                        16,
+                                        12,
+                                      ),
+                                      children: const [
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            'Tentang SIPKer',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 8),
+                                        Text(
+                                          'SIPKer (Sistem Informasi Pasar Kerja) adalah platform digital nasional yang dikembangkan untuk menyediakan informasi pasar kerja yang akurat, terintegrasi, dan berbasis data bagi masyarakat, dunia usaha, dan pemerintah.',
+                                        ),
+                                        SizedBox(height: 10),
+                                        Text(
+                                          'SIPKer berfungsi sebagai pusat pengelolaan dan analisis data ketenagakerjaan Indonesia, yang mencakup informasi lowongan kerja, karakteristik tenaga kerja, kebutuhan industri, tren pasar kerja, serta proyeksi ketenagakerjaan di tingkat nasional maupun daerah.',
+                                        ),
+                                        SizedBox(height: 10),
+                                        Text(
+                                          'Melalui SIPKer, pemerintah berupaya mendukung:',
+                                        ),
+                                        SizedBox(height: 8),
+                                        _Bullet(
+                                          text:
+                                              'pencari kerja dalam memperoleh informasi dan peluang kerja yang relevan,',
+                                        ),
+                                        _Bullet(
+                                          text:
+                                              'dunia usaha dalam menemukan tenaga kerja sesuai kebutuhan,',
+                                        ),
+                                        _Bullet(
+                                          text:
+                                              'perumusan kebijakan ketenagakerjaan yang berbasis bukti dan data.',
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const Divider(height: 0),
+                                  Theme(
+                                    data: Theme.of(context).copyWith(
+                                      dividerColor: Colors.transparent,
+                                    ),
+                                    child: ExpansionTile(
+                                      leading: const Icon(
+                                        Icons.privacy_tip_outlined,
+                                      ),
+                                      title: const Text('Privacy & Terms'),
+                                      subtitle: const Text(
+                                        'Read how we protect your data',
+                                      ),
+                                      childrenPadding:
+                                          const EdgeInsets.fromLTRB(
+                                        16,
+                                        0,
+                                        16,
+                                        12,
+                                      ),
+                                      children: const [
+                                        SelectableText(
+                                          _privacyTermsText,
+                                          style: TextStyle(height: 1.4),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Copyright © 2026 Pusat Pasar Kerja Indonesia',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.black54,
+                            ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-            const SizedBox(height: 12),
-            Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                children: [
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                      dividerColor: Colors.transparent,
-                    ),
-                    child: ExpansionTile(
-                      leading: const Icon(Icons.info_outline),
-                      title: const Text('About SIPKer'),
-                      subtitle: const Text('by PASKER.ID'),
-                      childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                      children: const [
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Tentang SIPKer',
-                            style: TextStyle(fontWeight: FontWeight.w700),
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'SIPKer (Sistem Informasi Pasar Kerja) adalah platform digital nasional yang dikembangkan untuk menyediakan informasi pasar kerja yang akurat, terintegrasi, dan berbasis data bagi masyarakat, dunia usaha, dan pemerintah.',
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          'SIPKer berfungsi sebagai pusat pengelolaan dan analisis data ketenagakerjaan Indonesia, yang mencakup informasi lowongan kerja, karakteristik tenaga kerja, kebutuhan industri, tren pasar kerja, serta proyeksi ketenagakerjaan di tingkat nasional maupun daerah.',
-                        ),
-                        SizedBox(height: 10),
-                        Text('Melalui SIPKer, pemerintah berupaya mendukung:'),
-                        SizedBox(height: 8),
-                        _Bullet(
-                          text:
-                              'pencari kerja dalam memperoleh informasi dan peluang kerja yang relevan,',
-                        ),
-                        _Bullet(
-                          text: 'dunia usaha dalam menemukan tenaga kerja sesuai kebutuhan,',
-                        ),
-                        _Bullet(
-                          text:
-                              'perumusan kebijakan ketenagakerjaan yang berbasis bukti dan data.',
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Divider(height: 0),
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                      dividerColor: Colors.transparent,
-                    ),
-                    child: ExpansionTile(
-                      leading: const Icon(Icons.privacy_tip_outlined),
-                      title: const Text('Privacy & Terms'),
-                      subtitle: const Text('Read how we protect your data'),
-                      childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                      children: const [
-                        SelectableText(
-                          _privacyTermsText,
-                          style: TextStyle(height: 1.4),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
