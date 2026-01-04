@@ -34,7 +34,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
             padding: EdgeInsets.fromLTRB(16, 12, 16, 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [SectionHeader(title: 'Report Library')],
+              children: [SectionHeader(title: 'Report Dashboard')],
             ),
           ),
           Expanded(
