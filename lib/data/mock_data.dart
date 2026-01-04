@@ -143,14 +143,18 @@ const reports = <ReportItem>[
         '?:showVizHome=no&:tabs=no&:toolbar=yes',
   ),
   ReportItem(
-    title: 'Services Labour Demand and Wages',
+    title: 'Persediaan Tenaga Kerja',
     period: 'Q2 2024',
     category: 'Labour Market Intelligence',
-    summary: 'Services hiring rebalanced toward logistics and digital trade; wage growth stable at 3.1% YoY.',
+    summary:
+        'Persediaan Tenaga Kerja menampilkan ringkasan data pencari kerja berdasarkan demografi dan wilayah.',
     pdfUrl: 'https://example.com/lmir-services-q2-2024.pdf',
     sector: 'Services',
     semester: 'I',
     year: '2024',
+    dashboardUrl:
+        'https://public.tableau.com/views/DashboardPersediaanTenagaKerja/'
+        'DashboardPencaker_New?:showVizHome=no&:tabs=no&:toolbar=yes',
   ),
   ReportItem(
     title: 'Provincial Labour Conditions Dashboard',

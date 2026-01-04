@@ -63,7 +63,7 @@ class ReportCard extends StatelessWidget {
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+                  child: ElevatedButton(
                 onPressed: onOpenDashboard,
                 child: const Text('Open Interactive Dashboard'),
               ),
