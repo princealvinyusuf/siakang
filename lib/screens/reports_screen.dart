@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../data/mock_data.dart';
 import '../config/tableau_urls.dart';
 import '../theme/app_theme.dart';
@@ -15,6 +14,17 @@ class ReportsScreen extends StatefulWidget {
 }
 
 class _ReportsScreenState extends State<ReportsScreen> {
+  void _openDashboard(BuildContext context, ReportItem report) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ReportDetailScreen(
+          reportUrl: kDefaultTableauReportUrl,
+          title: report.title,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -38,15 +48,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 return ReportCard(
                   report: report,
                   onReadSummary: () => _showSummarySheet(context, report),
-                  onDownload: () => _openPdf(report.pdfUrl),
-                  onOpenDetail: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => ReportDetailScreen(
-                        reportUrl: kDefaultTableauReportUrl,
-                        title: report.title,
-                      ),
-                    ),
-                  ),
+                  onOpenDashboard: () => _openDashboard(context, report),
                 );
               },
             ),
@@ -54,17 +56,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
         ],
       ),
     );
-  }
-
-  Future<void> _openPdf(String url) async {
-    final uri = Uri.parse(url);
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open PDF')),
-        );
-      }
-    }
   }
 
   void _showSummarySheet(BuildContext context, ReportItem report) {
@@ -98,20 +89,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 ],
               ),
               const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                children: [
-                  Chip(
-                    label: Text(report.period),
-                    backgroundColor: AppColors.primary.withAlpha(20),
-                  ),
-                  Chip(
-                    label: Text(report.sector),
-                    backgroundColor: Colors.grey.shade200,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
               Text(
                 report.summary,
                 style: Theme.of(context)
@@ -123,10 +100,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
               ElevatedButton.icon(
                 onPressed: () {
                   Navigator.pop(context);
-                  _openPdf(report.pdfUrl);
+                  _openDashboard(context, report);
                 },
-                icon: const Icon(Icons.picture_as_pdf_outlined),
-                label: const Text('Download PDF'),
+                icon: const Icon(Icons.dashboard_outlined),
+                label: const Text('Open Interactive Dashboard'),
               ),
             ],
           ),

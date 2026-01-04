@@ -112,10 +112,11 @@ const unemploymentTrend = <TrendPoint>[
 
 const reports = <ReportItem>[
   ReportItem(
-    title: 'Labour Market Intelligence Report – Semester II 2024',
+    title: 'Struktur Ketenagakerjaan',
     period: 'Semester II 2024',
     category: 'Labour Market Intelligence',
-    summary: 'National snapshot highlighting moderating TPT, rising formal vacancies, and sectoral shifts led by manufacturing and logistics.',
+    summary:
+        'Struktur Ketenagakerjaan memberikan gambaran singkat kondisi pasar kerja di Indonesia, mulai dari angkatan kerja, pengangguran, hingga sebaran pekerjaan dan pendidikan.',
     pdfUrl: 'https://example.com/lmir-sem2-2024.pdf',
     sector: 'National',
     semester: 'II',
