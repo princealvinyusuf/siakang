@@ -35,6 +35,7 @@ class ReportItem {
   final String sector;
   final String semester;
   final String year;
+  final String? dashboardUrl;
   final bool isLatest;
 
   const ReportItem({
@@ -46,6 +47,7 @@ class ReportItem {
     required this.sector,
     required this.semester,
     required this.year,
+    this.dashboardUrl,
     this.isLatest = false,
   });
 }
@@ -121,6 +123,9 @@ const reports = <ReportItem>[
     sector: 'National',
     semester: 'II',
     year: '2024',
+    dashboardUrl:
+        'https://public.tableau.com/views/DashboardStrukturKetenagakerjaanperFeb2025/'
+        'Dash_StrukturKetenagakerjaan?:showVizHome=no&:tabs=no&:toolbar=yes',
     isLatest: true,
   ),
   ReportItem(

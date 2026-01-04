@@ -14,10 +14,11 @@ class ReportsScreen extends StatefulWidget {
 
 class _ReportsScreenState extends State<ReportsScreen> {
   void _openDashboard(BuildContext context, ReportItem report) {
+    final url = report.dashboardUrl ?? kDefaultTableauReportUrl;
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => ReportDetailScreen(
-          reportUrl: kDefaultTableauReportUrl,
+          reportUrl: url,
           title: report.title,
         ),
       ),
