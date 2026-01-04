@@ -4,13 +4,11 @@ import '../theme/app_theme.dart';
 
 class ReportCard extends StatelessWidget {
   final ReportItem report;
-  final VoidCallback onReadSummary;
   final VoidCallback onOpenDashboard;
 
   const ReportCard({
     super.key,
     required this.report,
-    required this.onReadSummary,
     required this.onOpenDashboard,
   });
 
@@ -63,29 +61,12 @@ class ReportCard extends StatelessWidget {
                   ?.copyWith(color: AppColors.muted),
             ),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: onReadSummary,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primary,
-                      side: const BorderSide(color: AppColors.primary),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text('Read Summary'),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: onOpenDashboard,
-                    child: const Text('Open Interactive Dashboard'),
-                  ),
-                ),
-              ],
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: onOpenDashboard,
+                child: const Text('Open Interactive Dashboard'),
+              ),
             ),
           ],
         ),
