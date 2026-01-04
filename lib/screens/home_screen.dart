@@ -205,6 +205,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: 'TPT Menurut Pendidikan',
                   html: kTptEducationTableauEmbedHtml,
                 ),
+                TableauEmbedCarouselItem(
+                  title: 'Overview Angkatan Kerja',
+                  html: kLaborForceOverviewTableauEmbedHtml,
+                ),
               ],
             ),
             const SizedBox(height: 18),
