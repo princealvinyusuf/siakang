@@ -129,14 +129,18 @@ const reports = <ReportItem>[
     isLatest: true,
   ),
   ReportItem(
-    title: 'Sector Deep Dive: Manufacturing Hiring Outlook',
+    title: 'Kebutuhan Tenaga Kerja',
     period: 'Q3 2024',
     category: 'Labour Market Intelligence',
-    summary: 'Manufacturing led hiring growth with strong export clusters and domestic substitution momentum.',
+    summary:
+        'Kebutuhan Tenaga Kerja memberikan ringkasan permintaan lowongan kerja berdasarkan sektor, jabatan, waktu, dan wilayah.',
     pdfUrl: 'https://example.com/lmir-manufacturing-q3-2024.pdf',
     sector: 'Manufacturing',
     semester: 'II',
     year: '2024',
+    dashboardUrl:
+        'https://public.tableau.com/views/DataCollectingDashboardV_2/Dashboard'
+        '?:showVizHome=no&:tabs=no&:toolbar=yes',
   ),
   ReportItem(
     title: 'Services Labour Demand and Wages',
