@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/section_header.dart';
+import '../services/report_notification_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -9,7 +10,23 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  bool notifyReports = true;
+  bool notifyReports = false;
+  bool _notifyPrefLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNotifyPref();
+  }
+
+  Future<void> _loadNotifyPref() async {
+    final enabled = await ReportNotificationService.instance.isEnabled();
+    if (!mounted) return;
+    setState(() {
+      notifyReports = enabled;
+      _notifyPrefLoaded = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +60,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       'Notify when new report is published',
                                     ),
                                     value: notifyReports,
-                                    onChanged: (val) =>
-                                        setState(() => notifyReports = val),
+                                    onChanged: !_notifyPrefLoaded
+                                        ? null
+                                        : (val) async {
+                                            setState(() => notifyReports = val);
+                                            await ReportNotificationService
+                                                .instance
+                                                .setEnabled(val);
+                                          },
                                   ),
                                 ],
                               ),
