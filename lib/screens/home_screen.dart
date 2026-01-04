@@ -188,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             const SizedBox(height: 18),
-            const SectionHeader(title: 'Unemployment Rate (Last 12 Months)'),
+            const SectionHeader(title: 'Struktur Ketenagakerjaan Nasional'),
             const SizedBox(height: 10),
             const TableauEmbedCarousel(
               cardHeight: 470,
