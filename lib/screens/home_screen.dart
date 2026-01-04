@@ -456,19 +456,22 @@ class _LatestPublicationCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => DocumentViewerScreen(
-                      title: item.title,
-                      fileUrl: item.fileUrl,
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => DocumentViewerScreen(
+                        title: item.title,
+                        fileUrl: item.fileUrl,
+                      ),
                     ),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.open_in_new_rounded),
-              label: const Text('View Report'),
+                  );
+                },
+                icon: const Icon(Icons.open_in_new_rounded),
+                label: const Text('View Report'),
+              ),
             ),
           ],
         ),
