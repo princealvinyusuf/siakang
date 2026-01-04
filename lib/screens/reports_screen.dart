@@ -15,105 +15,26 @@ class ReportsScreen extends StatefulWidget {
 }
 
 class _ReportsScreenState extends State<ReportsScreen> {
-  final TextEditingController _searchController = TextEditingController();
-  String? yearFilter;
-  String? semesterFilter;
-  String? sectorFilter;
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final filtered = reports.where((report) {
-      final matchesQuery = report.title.toLowerCase().contains(
-            _searchController.text.toLowerCase(),
-          ) ||
-          report.summary.toLowerCase().contains(
-                _searchController.text.toLowerCase(),
-              );
-      final matchesYear = yearFilter == null || report.year == yearFilter;
-      final matchesSemester =
-          semesterFilter == null || report.semester == semesterFilter;
-      final matchesSector =
-          sectorFilter == null || report.sector == sectorFilter;
-      return matchesQuery && matchesYear && matchesSemester && matchesSector;
-    }).toList();
-
-    final years =
-        reports.map((r) => r.year).toSet().toList()..sort((a, b) => b.compareTo(a));
-    final semesters = reports.map((r) => r.semester).toSet().toList();
-    final sectors = reports.map((r) => r.sector).toSet().toList();
-
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 12, 16, 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SectionHeader(title: 'Report Library'),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: _searchController,
-                  onChanged: (_) => setState(() {}),
-                  decoration: const InputDecoration(
-                    hintText: 'Search reports (year, sector, keyword)',
-                    prefixIcon: Icon(Icons.search),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 6,
-                  children: [
-                    _FilterChip(
-                      label: 'Year',
-                      value: yearFilter ?? 'All',
-                      options: ['All', ...years],
-                      onSelected: (value) {
-                        setState(() {
-                          yearFilter = value == 'All' ? null : value;
-                        });
-                      },
-                    ),
-                    _FilterChip(
-                      label: 'Semester',
-                      value: semesterFilter ?? 'All',
-                      options: ['All', ...semesters],
-                      onSelected: (value) {
-                        setState(() {
-                          semesterFilter = value == 'All' ? null : value;
-                        });
-                      },
-                    ),
-                    _FilterChip(
-                      label: 'Sector',
-                      value: sectorFilter ?? 'All',
-                      options: ['All', ...sectors],
-                      onSelected: (value) {
-                        setState(() {
-                          sectorFilter = value == 'All' ? null : value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ],
+              children: [SectionHeader(title: 'Report Library')],
             ),
           ),
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              itemCount: filtered.length,
+              itemCount: reports.length,
               separatorBuilder: (_, __) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
-                final report = filtered[index];
+                final report = reports[index];
                 return ReportCard(
                   report: report,
                   onReadSummary: () => _showSummarySheet(context, report),
@@ -182,7 +103,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 children: [
                   Chip(
                     label: Text(report.period),
-                    backgroundColor: AppColors.primary.withOpacity(0.08),
+                    backgroundColor: AppColors.primary.withAlpha(20),
                   ),
                   Chip(
                     label: Text(report.sector),
@@ -214,51 +135,3 @@ class _ReportsScreenState extends State<ReportsScreen> {
     );
   }
 }
-
-class _FilterChip extends StatelessWidget {
-  final String label;
-  final String value;
-  final List<String> options;
-  final ValueChanged<String> onSelected;
-
-  const _FilterChip({
-    required this.label,
-    required this.value,
-    required this.options,
-    required this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
-      initialValue: value,
-      onSelected: onSelected,
-      itemBuilder: (_) {
-        return options
-            .map(
-              (opt) => PopupMenuItem<String>(
-                value: opt,
-                child: Text(opt),
-              ),
-            )
-            .toList();
-      },
-      child: Chip(
-        label: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('$label: $value'),
-            const Icon(Icons.arrow_drop_down),
-          ],
-        ),
-        backgroundColor: AppColors.card,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(color: AppColors.primary),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-      ),
-    );
-  }
-}
-
