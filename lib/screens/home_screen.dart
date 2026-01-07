@@ -122,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onAction: () => setState(() {
                 _showAllIndicators = !_showAllIndicators;
               }),
-              actionLabel: _showAllIndicators ? 'Hide' : 'See all',
+              actionLabel: _showAllIndicators ? 'Sembunyikan' : 'Lihat Semua',
             ),
             const SizedBox(height: 10),
             FutureBuilder<_IndicatorsData>(
@@ -191,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SectionHeader(title: 'Struktur Ketenagakerjaan Nasional'),
             const SizedBox(height: 10),
             const TableauEmbedCarousel(
-              cardHeight: 470,
+              cardHeight: 480,
               items: [
                 TableauEmbedCarouselItem(
                   title: 'Overview Pengangguran',
@@ -213,8 +213,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 18),
             SectionHeader(
-              title: 'Latest Report',
-              actionLabel: 'View library',
+              title: 'Laporan terbaru',
+              actionLabel: 'Lihat semua',
               onAction: () {
                 // Switch bottom-nav tab to "Data" (index 2 in main.dart)
                 TabNavController.of(context).value = 2;
@@ -470,7 +470,7 @@ class _LatestPublicationCard extends StatelessWidget {
                   );
                 },
                 icon: const Icon(Icons.open_in_new_rounded),
-                label: const Text('View Report'),
+                label: const Text('Lihat Laporan'),
               ),
             ),
           ],

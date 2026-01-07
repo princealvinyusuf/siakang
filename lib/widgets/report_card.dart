@@ -65,7 +65,7 @@ class ReportCard extends StatelessWidget {
               width: double.infinity,
                   child: ElevatedButton(
                 onPressed: onOpenDashboard,
-                child: const Text('Open Interactive Dashboard'),
+                child: const Text('Buka Dashboard Interaktif'),
               ),
             ),
           ],

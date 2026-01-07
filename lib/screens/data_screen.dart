@@ -52,8 +52,8 @@ class _DataScreenState extends State<DataScreen> {
             ),
             const SizedBox(height: 20),
             SectionHeader(
-              title: 'Quick downloads',
-              actionLabel: _showAll ? 'Hide' : 'View all',
+              title: 'Lihat dokumen',
+              actionLabel: _showAll ? 'Sembunyikan' : 'Lihat semua',
               onAction: () => setState(() => _showAll = !_showAll),
             ),
             const SizedBox(height: 8),
@@ -70,7 +70,7 @@ class _DataScreenState extends State<DataScreen> {
               items: [
                 const DropdownMenuItem<String?>(
                   value: null,
-                  child: Text('All subjects'),
+                  child: Text('Semua judul'),
                 ),
                 ..._subjects.map(
                   (s) => DropdownMenuItem<String?>(
