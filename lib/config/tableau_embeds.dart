@@ -70,12 +70,44 @@ const String kUnemploymentOverviewTableauEmbedHtml = r'''
       </object>
     </div>
     <script type="text/javascript">
+      function autoFitViz(vizId) {
+        var holder = document.getElementById(vizId);
+        if (!holder) return;
+
+        function fit() {
+          var frame = holder.querySelector("iframe");
+          if (!frame) return;
+
+          frame.style.transformOrigin = "top left";
+
+          // Fallback zoom-out for Tableau if internal width is wider than mobile card.
+          var scale = 0.82;
+
+          frame.style.transform = "scale(" + scale + ")";
+          frame.style.width = (100 / scale) + "%";
+          frame.style.height = (100 / scale) + "%";
+        }
+
+        // Retry a few times since Tableau renders asynchronously.
+        var attempts = 0;
+        var timer = setInterval(function () {
+          attempts += 1;
+          fit();
+          if (attempts > 20) clearInterval(timer);
+        }, 250);
+
+        window.addEventListener("resize", fit);
+      }
+
       var divElement = document.getElementById("vizUnemploymentOverview");
       var vizElement = divElement.getElementsByTagName("object")[0];
       vizElement.style.width = "100%";
       vizElement.style.height = "100%";
       var scriptElement = document.createElement("script");
       scriptElement.src = "https://public.tableau.com/javascripts/api/viz_v1.js";
+      scriptElement.onload = function () {
+        autoFitViz("vizUnemploymentOverview");
+      };
       vizElement.parentNode.insertBefore(scriptElement, vizElement);
     </script>
   </body>
@@ -146,12 +178,42 @@ const String kWorkOverviewTableauEmbedHtml = r'''
         </object>
     </div>
     <script type="text/javascript">
+      function autoFitViz(vizId) {
+        var holder = document.getElementById(vizId);
+        if (!holder) return;
+
+        function fit() {
+          var frame = holder.querySelector("iframe");
+          if (!frame) return;
+
+          frame.style.transformOrigin = "top left";
+
+          var scale = 0.82;
+
+          frame.style.transform = "scale(" + scale + ")";
+          frame.style.width = (100 / scale) + "%";
+          frame.style.height = (100 / scale) + "%";
+        }
+
+        var attempts = 0;
+        var timer = setInterval(function () {
+          attempts += 1;
+          fit();
+          if (attempts > 20) clearInterval(timer);
+        }, 250);
+
+        window.addEventListener("resize", fit);
+      }
+
       var divElement = document.getElementById("vizWorkOverview");
       var vizElement = divElement.getElementsByTagName("object")[0];
       vizElement.style.width = "100%";
       vizElement.style.height = "100%";
       var scriptElement = document.createElement("script");
       scriptElement.src = "https://public.tableau.com/javascripts/api/viz_v1.js";
+      scriptElement.onload = function () {
+        autoFitViz("vizWorkOverview");
+      };
       vizElement.parentNode.insertBefore(scriptElement, vizElement);
     </script>
   </body>
@@ -219,12 +281,42 @@ const String kTptEducationTableauEmbedHtml = r'''
         </object>
     </div>
     <script type="text/javascript">
+      function autoFitViz(vizId) {
+        var holder = document.getElementById(vizId);
+        if (!holder) return;
+
+        function fit() {
+          var frame = holder.querySelector("iframe");
+          if (!frame) return;
+
+          frame.style.transformOrigin = "top left";
+
+          var scale = 0.82;
+
+          frame.style.transform = "scale(" + scale + ")";
+          frame.style.width = (100 / scale) + "%";
+          frame.style.height = (100 / scale) + "%";
+        }
+
+        var attempts = 0;
+        var timer = setInterval(function () {
+          attempts += 1;
+          fit();
+          if (attempts > 20) clearInterval(timer);
+        }, 250);
+
+        window.addEventListener("resize", fit);
+      }
+
       var divElement = document.getElementById("vizTptEdu");
       var vizElement = divElement.getElementsByTagName("object")[0];
       vizElement.style.width = "100%";
       vizElement.style.height = "100%";
       var scriptElement = document.createElement("script");
       scriptElement.src = "https://public.tableau.com/javascripts/api/viz_v1.js";
+      scriptElement.onload = function () {
+        autoFitViz("vizTptEdu");
+      };
       vizElement.parentNode.insertBefore(scriptElement, vizElement);
     </script>
   </body>
@@ -292,12 +384,42 @@ const String kLaborForceOverviewTableauEmbedHtml = r'''
         </object>
     </div>
     <script type="text/javascript">
+      function autoFitViz(vizId) {
+        var holder = document.getElementById(vizId);
+        if (!holder) return;
+
+        function fit() {
+          var frame = holder.querySelector("iframe");
+          if (!frame) return;
+
+          frame.style.transformOrigin = "top left";
+
+          var scale = 0.82;
+
+          frame.style.transform = "scale(" + scale + ")";
+          frame.style.width = (100 / scale) + "%";
+          frame.style.height = (100 / scale) + "%";
+        }
+
+        var attempts = 0;
+        var timer = setInterval(function () {
+          attempts += 1;
+          fit();
+          if (attempts > 20) clearInterval(timer);
+        }, 250);
+
+        window.addEventListener("resize", fit);
+      }
+
       var divElement = document.getElementById("vizLaborForceOverview");
       var vizElement = divElement.getElementsByTagName("object")[0];
       vizElement.style.width = "100%";
       vizElement.style.height = "100%";
       var scriptElement = document.createElement("script");
       scriptElement.src = "https://public.tableau.com/javascripts/api/viz_v1.js";
+      scriptElement.onload = function () {
+        autoFitViz("vizLaborForceOverview");
+      };
       vizElement.parentNode.insertBefore(scriptElement, vizElement);
     </script>
   </body>
