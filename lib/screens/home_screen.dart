@@ -191,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SectionHeader(title: 'Struktur Ketenagakerjaan Nasional'),
             const SizedBox(height: 10),
             const TableauEmbedCarousel(
-              cardHeight: 400,
+              cardHeight: 380,
               items: [
                 TableauEmbedCarouselItem(
                   title: 'Overview Pengangguran',
