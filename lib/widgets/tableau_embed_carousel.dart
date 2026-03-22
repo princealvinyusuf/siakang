@@ -34,7 +34,8 @@ class _TableauEmbedCarouselState extends State<TableauEmbedCarousel> {
   @override
   void initState() {
     super.initState();
-    _controller = PageController(viewportFraction: 0.92);
+    // Use full-width pages so Tableau gets maximum horizontal room.
+    _controller = PageController(viewportFraction: 1.0);
   }
 
   @override
