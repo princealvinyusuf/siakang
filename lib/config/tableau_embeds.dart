@@ -78,16 +78,18 @@ const String kUnemploymentOverviewTableauEmbedHtml = r'''
           var frame = holder.querySelector("iframe");
           if (!frame) return;
 
-          frame.style.transformOrigin = "top center";
+          frame.style.transformOrigin = "top left";
 
           // Fallback zoom-out for Tableau if internal width is wider than mobile card.
           var scale = 0.82;
 
           frame.style.transform = "scale(" + scale + ")";
-          frame.style.width = (100 / scale) + "%";
+          frame.style.width = "100%";
           frame.style.height = (100 / scale) + "%";
-          frame.style.display = "block";
-          frame.style.margin = "0 auto";
+          frame.style.position = "relative";
+          var renderedWidth = frame.getBoundingClientRect().width || holder.clientWidth;
+          var offset = Math.max(0, (holder.clientWidth - renderedWidth) / 2);
+          frame.style.left = offset + "px";
         }
 
         // Retry a few times since Tableau renders asynchronously.
@@ -188,15 +190,17 @@ const String kWorkOverviewTableauEmbedHtml = r'''
           var frame = holder.querySelector("iframe");
           if (!frame) return;
 
-          frame.style.transformOrigin = "top center";
+          frame.style.transformOrigin = "top left";
 
           var scale = 0.82;
 
           frame.style.transform = "scale(" + scale + ")";
-          frame.style.width = (100 / scale) + "%";
+          frame.style.width = "100%";
           frame.style.height = (100 / scale) + "%";
-          frame.style.display = "block";
-          frame.style.margin = "0 auto";
+          frame.style.position = "relative";
+          var renderedWidth = frame.getBoundingClientRect().width || holder.clientWidth;
+          var offset = Math.max(0, (holder.clientWidth - renderedWidth) / 2);
+          frame.style.left = offset + "px";
         }
 
         var attempts = 0;
@@ -293,15 +297,17 @@ const String kTptEducationTableauEmbedHtml = r'''
           var frame = holder.querySelector("iframe");
           if (!frame) return;
 
-          frame.style.transformOrigin = "top center";
+          frame.style.transformOrigin = "top left";
 
           var scale = 0.82;
 
           frame.style.transform = "scale(" + scale + ")";
-          frame.style.width = (100 / scale) + "%";
+          frame.style.width = "100%";
           frame.style.height = (100 / scale) + "%";
-          frame.style.display = "block";
-          frame.style.margin = "0 auto";
+          frame.style.position = "relative";
+          var renderedWidth = frame.getBoundingClientRect().width || holder.clientWidth;
+          var offset = Math.max(0, (holder.clientWidth - renderedWidth) / 2);
+          frame.style.left = offset + "px";
         }
 
         var attempts = 0;
@@ -398,15 +404,17 @@ const String kLaborForceOverviewTableauEmbedHtml = r'''
           var frame = holder.querySelector("iframe");
           if (!frame) return;
 
-          frame.style.transformOrigin = "top center";
+          frame.style.transformOrigin = "top left";
 
           var scale = 0.82;
 
           frame.style.transform = "scale(" + scale + ")";
-          frame.style.width = (100 / scale) + "%";
+          frame.style.width = "100%";
           frame.style.height = (100 / scale) + "%";
-          frame.style.display = "block";
-          frame.style.margin = "0 auto";
+          frame.style.position = "relative";
+          var renderedWidth = frame.getBoundingClientRect().width || holder.clientWidth;
+          var offset = Math.max(0, (holder.clientWidth - renderedWidth) / 2);
+          frame.style.left = offset + "px";
         }
 
         var attempts = 0;
