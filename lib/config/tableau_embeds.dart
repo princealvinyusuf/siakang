@@ -82,10 +82,12 @@ const String kUnemploymentOverviewTableauEmbedHtml = r'''
 
           // Fallback zoom-out for Tableau if internal width is wider than mobile card.
           var scale = 0.82;
+          var extraPercent = (100 / scale) - 100;
 
           frame.style.transform = "scale(" + scale + ")";
           frame.style.width = (100 / scale) + "%";
           frame.style.height = (100 / scale) + "%";
+          frame.style.marginLeft = "-" + (extraPercent / 2) + "%";
         }
 
         // Retry a few times since Tableau renders asynchronously.
@@ -189,10 +191,12 @@ const String kWorkOverviewTableauEmbedHtml = r'''
           frame.style.transformOrigin = "top left";
 
           var scale = 0.82;
+          var extraPercent = (100 / scale) - 100;
 
           frame.style.transform = "scale(" + scale + ")";
           frame.style.width = (100 / scale) + "%";
           frame.style.height = (100 / scale) + "%";
+          frame.style.marginLeft = "-" + (extraPercent / 2) + "%";
         }
 
         var attempts = 0;
@@ -292,10 +296,12 @@ const String kTptEducationTableauEmbedHtml = r'''
           frame.style.transformOrigin = "top left";
 
           var scale = 0.82;
+          var extraPercent = (100 / scale) - 100;
 
           frame.style.transform = "scale(" + scale + ")";
           frame.style.width = (100 / scale) + "%";
           frame.style.height = (100 / scale) + "%";
+          frame.style.marginLeft = "-" + (extraPercent / 2) + "%";
         }
 
         var attempts = 0;
@@ -395,10 +401,12 @@ const String kLaborForceOverviewTableauEmbedHtml = r'''
           frame.style.transformOrigin = "top left";
 
           var scale = 0.82;
+          var extraPercent = (100 / scale) - 100;
 
           frame.style.transform = "scale(" + scale + ")";
           frame.style.width = (100 / scale) + "%";
           frame.style.height = (100 / scale) + "%";
+          frame.style.marginLeft = "-" + (extraPercent / 2) + "%";
         }
 
         var attempts = 0;
