@@ -40,17 +40,29 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
     const js = '''
       (function() {
         var scale = $_tableauScale;
+        var frame = document.querySelector('iframe');
+        if (frame) {
+          frame.style.transformOrigin = 'top left';
+          frame.style.position = 'absolute';
+          frame.style.left = '0';
+          frame.style.top = '0';
+          frame.style.transform = 'scale(' + scale + ')';
+          frame.style.width = (100 / scale) + '%';
+          frame.style.height = (100 / scale) + '%';
+          return;
+        }
+
+        // Fallback for Tableau pages rendered without a nested iframe.
         var root = document.body;
         if (!root) return;
-
         root.style.transformOrigin = 'top left';
         root.style.transform = 'scale(' + scale + ')';
         root.style.width = (100 / scale) + '%';
       })();
     ''';
 
-    // Retry a few times because Tableau content can finalize after page finish.
-    for (var attempt = 0; attempt < 6; attempt++) {
+    // Match Home behavior: retry while Tableau finishes async rendering.
+    for (var attempt = 0; attempt < 20; attempt++) {
       try {
         await _controller.runJavaScript(js);
       } catch (_) {
