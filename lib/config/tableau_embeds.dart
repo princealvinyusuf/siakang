@@ -55,7 +55,7 @@ const String kUnemploymentOverviewTableauEmbedHtml = r'''
           value="3_OverviewPengangguran/3_Dash_unemploy_overview"
         />
         <param name="tabs" value="no" />
-        <param name="toolbar" value="yes" />
+        <param name="toolbar" value="no" />
         <param name="device" value="phone" />
         <param
           name="static_image"
@@ -78,18 +78,16 @@ const String kUnemploymentOverviewTableauEmbedHtml = r'''
           var frame = holder.querySelector("iframe");
           if (!frame) return;
 
-          frame.style.transformOrigin = "top left";
+          frame.style.transformOrigin = "top center";
 
           // Fallback zoom-out for Tableau if internal width is wider than mobile card.
           var scale = 0.82;
 
-          frame.style.transform = "scale(" + scale + ")";
-          frame.style.width = "100%";
-          frame.style.height = (100 / scale) + "%";
           frame.style.position = "relative";
-          var renderedWidth = frame.getBoundingClientRect().width || holder.clientWidth;
-          var offset = Math.max(0, (holder.clientWidth - renderedWidth) / 2);
-          frame.style.left = offset + "px";
+          frame.style.left = "50%";
+          frame.style.transform = "translateX(-50%) scale(" + scale + ")";
+          frame.style.width = (100 / scale) + "%";
+          frame.style.height = (100 / scale) + "%";
         }
 
         // Retry a few times since Tableau renders asynchronously.
@@ -166,7 +164,7 @@ const String kWorkOverviewTableauEmbedHtml = r'''
             value="1_OverviewPendudukBekerja/1_Dash_work_overview"
           />
           <param name="tabs" value="no" />
-          <param name="toolbar" value="yes" />
+          <param name="toolbar" value="no" />
           <param name="device" value="phone" />
           <param
             name="static_image"
@@ -190,17 +188,15 @@ const String kWorkOverviewTableauEmbedHtml = r'''
           var frame = holder.querySelector("iframe");
           if (!frame) return;
 
-          frame.style.transformOrigin = "top left";
+          frame.style.transformOrigin = "top center";
 
           var scale = 0.82;
 
-          frame.style.transform = "scale(" + scale + ")";
-          frame.style.width = "100%";
-          frame.style.height = (100 / scale) + "%";
           frame.style.position = "relative";
-          var renderedWidth = frame.getBoundingClientRect().width || holder.clientWidth;
-          var offset = Math.max(0, (holder.clientWidth - renderedWidth) / 2);
-          frame.style.left = offset + "px";
+          frame.style.left = "50%";
+          frame.style.transform = "translateX(-50%) scale(" + scale + ")";
+          frame.style.width = (100 / scale) + "%";
+          frame.style.height = (100 / scale) + "%";
         }
 
         var attempts = 0;
@@ -273,7 +269,7 @@ const String kTptEducationTableauEmbedHtml = r'''
           <param name="site_root" value="" />
           <param name="name" value="3_TPTMenurutPendidikan/3_Dash_TPTedu" />
           <param name="tabs" value="no" />
-          <param name="toolbar" value="yes" />
+          <param name="toolbar" value="no" />
           <param name="device" value="phone" />
           <param
             name="static_image"
@@ -297,17 +293,15 @@ const String kTptEducationTableauEmbedHtml = r'''
           var frame = holder.querySelector("iframe");
           if (!frame) return;
 
-          frame.style.transformOrigin = "top left";
+          frame.style.transformOrigin = "top center";
 
           var scale = 0.82;
 
-          frame.style.transform = "scale(" + scale + ")";
-          frame.style.width = "100%";
-          frame.style.height = (100 / scale) + "%";
           frame.style.position = "relative";
-          var renderedWidth = frame.getBoundingClientRect().width || holder.clientWidth;
-          var offset = Math.max(0, (holder.clientWidth - renderedWidth) / 2);
-          frame.style.left = offset + "px";
+          frame.style.left = "50%";
+          frame.style.transform = "translateX(-50%) scale(" + scale + ")";
+          frame.style.width = (100 / scale) + "%";
+          frame.style.height = (100 / scale) + "%";
         }
 
         var attempts = 0;
@@ -380,7 +374,7 @@ const String kLaborForceOverviewTableauEmbedHtml = r'''
           <param name="site_root" value="" />
           <param name="name" value="2_OverviewAngkatanKerja/2_Dash_angkatan_overview" />
           <param name="tabs" value="no" />
-          <param name="toolbar" value="yes" />
+          <param name="toolbar" value="no" />
           <param name="device" value="phone" />
           <param
             name="static_image"
@@ -404,17 +398,15 @@ const String kLaborForceOverviewTableauEmbedHtml = r'''
           var frame = holder.querySelector("iframe");
           if (!frame) return;
 
-          frame.style.transformOrigin = "top left";
+          frame.style.transformOrigin = "top center";
 
           var scale = 0.82;
 
-          frame.style.transform = "scale(" + scale + ")";
-          frame.style.width = "100%";
-          frame.style.height = (100 / scale) + "%";
           frame.style.position = "relative";
-          var renderedWidth = frame.getBoundingClientRect().width || holder.clientWidth;
-          var offset = Math.max(0, (holder.clientWidth - renderedWidth) / 2);
-          frame.style.left = offset + "px";
+          frame.style.left = "50%";
+          frame.style.transform = "translateX(-50%) scale(" + scale + ")";
+          frame.style.width = (100 / scale) + "%";
+          frame.style.height = (100 / scale) + "%";
         }
 
         var attempts = 0;
