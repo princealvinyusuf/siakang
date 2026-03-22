@@ -18,10 +18,6 @@ class ReportDetailScreen extends StatefulWidget {
 class _ReportDetailScreenState extends State<ReportDetailScreen> {
   late final WebViewController _controller;
   bool _isLoading = true;
-  static const double _initialTableauScale = 0.85;
-  static const double _minScale = 0.60;
-  static const double _scaleStep = 0.05;
-  double _currentScale = _initialTableauScale;
 
   @override
   void initState() {
@@ -30,56 +26,10 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
         NavigationDelegate(
-          onPageFinished: (_) async {
-            if (mounted) setState(() => _isLoading = false);
-            await _applyZoom(scale: _currentScale);
-          },
+          onPageFinished: (_) => setState(() => _isLoading = false),
         ),
       )
       ..loadRequest(Uri.parse(widget.reportUrl));
-  }
-
-  Future<void> _applyZoom({required double scale}) async {
-    final js = '''
-      (function() {
-        var scale = $scale;
-        var frame = document.querySelector('iframe');
-        if (frame) {
-          frame.style.transformOrigin = 'top left';
-          frame.style.position = 'absolute';
-          frame.style.left = '0';
-          frame.style.top = '0';
-          frame.style.transform = 'scale(' + scale + ')';
-          frame.style.width = (100 / scale) + '%';
-          frame.style.height = (100 / scale) + '%';
-          return;
-        }
-
-        // Fallback for Tableau pages rendered without a nested iframe.
-        var root = document.body;
-        if (!root) return;
-        root.style.transformOrigin = 'top left';
-        root.style.transform = 'scale(' + scale + ')';
-        root.style.width = (100 / scale) + '%';
-      })();
-    ''';
-
-    // Match Home behavior: retry while Tableau finishes async rendering.
-    for (var attempt = 0; attempt < 20; attempt++) {
-      try {
-        await _controller.runJavaScript(js);
-      } catch (_) {
-        // Ignore transient JS execution failures during navigation.
-      }
-      await Future<void>.delayed(const Duration(milliseconds: 250));
-    }
-  }
-
-  Future<void> _handleZoomOutPressed() async {
-    final nextScale = (_currentScale - _scaleStep).clamp(_minScale, 1.0);
-    if (nextScale == _currentScale) return;
-    setState(() => _currentScale = nextScale);
-    await _applyZoom(scale: _currentScale);
   }
 
   @override
@@ -91,13 +41,6 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        actions: [
-          IconButton(
-            tooltip: 'Zoom out',
-            icon: const Icon(Icons.zoom_out_rounded),
-            onPressed: _handleZoomOutPressed,
-          ),
-        ],
       ),
       body: Stack(
         children: [
