@@ -18,6 +18,7 @@ class ReportDetailScreen extends StatefulWidget {
 class _ReportDetailScreenState extends State<ReportDetailScreen> {
   late final WebViewController _controller;
   bool _isLoading = true;
+  static const double _tableauScale = 0.85;
 
   @override
   void initState() {
@@ -26,10 +27,37 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
         NavigationDelegate(
-          onPageFinished: (_) => setState(() => _isLoading = false),
+          onPageFinished: (_) async {
+            if (mounted) setState(() => _isLoading = false);
+            await _applyZoomOut();
+          },
         ),
       )
       ..loadRequest(Uri.parse(widget.reportUrl));
+  }
+
+  Future<void> _applyZoomOut() async {
+    const js = '''
+      (function() {
+        var scale = $_tableauScale;
+        var root = document.body;
+        if (!root) return;
+
+        root.style.transformOrigin = 'top left';
+        root.style.transform = 'scale(' + scale + ')';
+        root.style.width = (100 / scale) + '%';
+      })();
+    ''';
+
+    // Retry a few times because Tableau content can finalize after page finish.
+    for (var attempt = 0; attempt < 6; attempt++) {
+      try {
+        await _controller.runJavaScript(js);
+      } catch (_) {
+        // Ignore transient JS execution failures during navigation.
+      }
+      await Future<void>.delayed(const Duration(milliseconds: 250));
+    }
   }
 
   @override
