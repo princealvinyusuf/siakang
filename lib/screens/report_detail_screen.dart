@@ -18,7 +18,10 @@ class ReportDetailScreen extends StatefulWidget {
 class _ReportDetailScreenState extends State<ReportDetailScreen> {
   late final WebViewController _controller;
   bool _isLoading = true;
-  static const double _tableauScale = 0.85;
+  static const double _initialTableauScale = 0.85;
+  static const double _minScale = 0.60;
+  static const double _scaleStep = 0.05;
+  double _currentScale = _initialTableauScale;
 
   @override
   void initState() {
@@ -29,17 +32,17 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
         NavigationDelegate(
           onPageFinished: (_) async {
             if (mounted) setState(() => _isLoading = false);
-            await _applyZoomOut();
+            await _applyZoom(scale: _currentScale);
           },
         ),
       )
       ..loadRequest(Uri.parse(widget.reportUrl));
   }
 
-  Future<void> _applyZoomOut() async {
-    const js = '''
+  Future<void> _applyZoom({required double scale}) async {
+    final js = '''
       (function() {
-        var scale = $_tableauScale;
+        var scale = $scale;
         var frame = document.querySelector('iframe');
         if (frame) {
           frame.style.transformOrigin = 'top left';
@@ -72,6 +75,13 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
     }
   }
 
+  Future<void> _handleZoomOutPressed() async {
+    final nextScale = (_currentScale - _scaleStep).clamp(_minScale, 1.0);
+    if (nextScale == _currentScale) return;
+    setState(() => _currentScale = nextScale);
+    await _applyZoom(scale: _currentScale);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,6 +91,13 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
+        actions: [
+          IconButton(
+            tooltip: 'Zoom out',
+            icon: const Icon(Icons.zoom_out_rounded),
+            onPressed: _handleZoomOutPressed,
+          ),
+        ],
       ),
       body: Stack(
         children: [
