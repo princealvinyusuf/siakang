@@ -78,7 +78,7 @@ class _ShellState extends State<_Shell> {
                 NavigationDestination(
                   icon: Icon(Icons.dataset_outlined),
                   selectedIcon: Icon(Icons.dataset),
-                  label: 'Data',
+                  label: 'Dokumen',
                 ),
                 NavigationDestination(
                   icon: Icon(Icons.info_outline),

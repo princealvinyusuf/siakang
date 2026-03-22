@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../data/information_api.dart';
-import '../data/mock_data.dart';
 import '../theme/app_theme.dart';
 import '../widgets/section_header.dart';
 import 'document_viewer_screen.dart';
@@ -41,16 +40,8 @@ class _DataScreenState extends State<DataScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SectionHeader(title: 'Data'),
+            const SectionHeader(title: 'Dokumen'),
             const SizedBox(height: 12),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: dataHighlights
-                  .map((item) => _HighlightCard(item: item))
-                  .toList(),
-            ),
-            const SizedBox(height: 20),
             SectionHeader(
               title: 'Lihat dokumen',
               actionLabel: _showAll ? 'Sembunyikan' : 'Lihat semua',
@@ -141,63 +132,6 @@ class _DataScreenState extends State<DataScreen> {
               },
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _HighlightCard extends StatelessWidget {
-  final DataHighlight item;
-
-  const _HighlightCard({required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: (MediaQuery.of(context).size.width - 48) / 2,
-      child: Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(item.icon, color: AppColors.primary),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                item.title,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                item.value,
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall
-                    ?.copyWith(color: AppColors.primary),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                item.subtitle,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(color: AppColors.muted),
-              ),
-            ],
-          ),
         ),
       ),
     );
